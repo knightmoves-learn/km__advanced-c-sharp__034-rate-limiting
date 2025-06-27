@@ -2,7 +2,8 @@
 
 ## Lecture
 
-[![# Rate Limiting)](https://img.youtube.com/vi/1E4uIz_DkU4/0.jpg)](https://www.youtube.com/watch?v=1E4uIz_DkU4)
+[![# Rate Limiting(Part 1)]](https://img.youtube.com/vi/o-ywr3-vKzo/0.jpg)](https://www.youtube.com/watch?v=o-ywr3-vKzo)
+[![# Rate Limiting(Part 2)]](https://img.youtube.com/vi/V7Pu4b8tBDc/0.jpg)](https://www.youtube.com/watch?v=V7Pu4b8tBDc)
 
 ## Instructions
 

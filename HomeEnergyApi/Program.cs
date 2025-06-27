@@ -37,8 +37,6 @@ builder.Services.AddHttpClient<ZipCodeLocationService>();
 
 builder.Services.AddTransient<HomeUtilityProviderService>();
 
-builder.Services.AddSingleton<RateLimitingService>();
-
 builder.Services.AddDbContext<HomeDbContext>(options =>
     options.UseSqlite("Data Source=Homes.db").ConfigureWarnings(warings =>
     warings.Ignore(RelationalEventId.NonTransactionalMigrationOperationWarning)));
@@ -133,8 +131,6 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<HomeDbContext>();
     db.Database.Migrate();
 }
-
-app.UseMiddleware<RateLimitingMiddleware>();
 
 app.UseWhen(context => !context.Request.Path.StartsWithSegments("/swagger"), appBuilder =>
 {
