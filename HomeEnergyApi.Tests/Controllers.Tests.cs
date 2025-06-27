@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
+using System.Net;
 using Microsoft.Extensions.Logging;
 using HomeEnergyApi.Dtos;
 using HomeEnergyApi.Models;
@@ -236,17 +235,35 @@ public class ControllersTests
         await client.SendAsync(sendRequest);
 
         var logs = _factory.LoggerProvider.Logs;
-        Assert.Contains(logs, log => 
+        Assert.Contains(logs, log =>
             log.LogLevel == LogLevel.Information &&
             log.Message.Contains("Encrypted Street Address:"));
 
-        Assert.Contains(logs, log => 
+        Assert.Contains(logs, log =>
             log.LogLevel == LogLevel.Information &&
             log.Message.Contains("Hashed Password:"));
 
-        Assert.Contains(logs, log => 
+        Assert.Contains(logs, log =>
             log.LogLevel == LogLevel.Debug &&
             log.Message.Contains("Saved Username:"));
+    }
+
+    [Theory, TestPriority(12)]
+    [InlineData("/Homes")]
+    public async Task RateLimitingServiceReturnsTooManyRequestsAfter20RequestsInUnderASecond(string url)
+    {
+        var client = _factory.CreateClient();
+
+        var responses = new List<HttpResponseMessage>();
+
+        for (int i = 0; i < 21; i++)
+        {
+            var response = await client.GetAsync(url);
+            responses.Add(response);
+        }
+
+        Assert.True(responses[20].StatusCode.Equals(HttpStatusCode.TooManyRequests),
+            $"No timeout after 20 requests to {url}. Expected 429 Too Many Requests, but got {(int)responses[20].StatusCode}: {responses[20].StatusCode}");
     }
 
     public async Task<string> GetBearerToken(string username, string password, string role, string homeStreetAddress, bool trimToken)
